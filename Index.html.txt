@@ -1,0 +1,701 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rocket Builder - By FRONTI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2a2a2a;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            background: #3a3a3a;
+            border: 3px solid #555;
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 0 40px rgba(0,0,0,0.7);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(200,200,200,0.2);
+            letter-spacing: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .main-layout {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .controls {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .canvas-container {
+            flex: 1.5;
+            min-width: 280px;
+            background: #222;
+            border: 2px solid #444;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            background: #555;
+            border-radius: 8px;
+            border: 2px solid #666;
+        }
+
+        .panel {
+            background: #333;
+            border: 1px solid #555;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+
+        .panel h2 {
+            color: #ddd;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #555;
+            padding-bottom: 5px;
+        }
+
+        .slider-group {
+            margin-bottom: 12px;
+        }
+
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        .slider-group label span {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin-top: 3px;
+            accent-color: #888;
+            background: #444;
+            height: 4px;
+            border-radius: 10px;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #aaa;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #444;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            border-radius: 8px;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #555;
+            transform: scale(1.02);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-launch {
+            background: #666;
+            border-color: #888;
+            font-size: 18px;
+        }
+
+        .btn-launch:hover {
+            background: #777;
+        }
+
+        .speed-btn {
+            background: #3a3a3a;
+            border-color: #555;
+            font-size: 12px;
+            flex: 0.5;
+        }
+
+        .speed-btn.active {
+            background: #666;
+            border-color: #aaa;
+        }
+
+        #resultBox {
+            margin-top: 12px;
+            padding: 14px;
+            border-radius: 10px;
+            text-align: center;
+            background: #2a2a2a;
+            border: 1px solid #555;
+            min-height: 70px;
+            display: none;
+        }
+
+        #resultBox.show {
+            display: block;
+        }
+
+        #resultBox .height {
+            font-size: 38px;
+            font-weight: bold;
+            color: #ffcc44;
+        }
+
+        #resultBox .message {
+            font-size: 15px;
+            margin-top: 6px;
+            color: #ff7766;
+        }
+
+        #resultBox .suggestion {
+            font-size: 13px;
+            margin-top: 8px;
+            color: #aaa;
+            padding: 6px;
+            border-top: 1px solid #444;
+        }
+
+        .pass .height {
+            color: #44ff88 !important;
+        }
+
+        .pass .message {
+            color: #44ff88 !important;
+        }
+
+        .fail .height {
+            color: #ff4444 !important;
+        }
+
+        .fail .message {
+            color: #ff6666 !important;
+        }
+
+        .footer-area {
+            text-align: center;
+            color: #666;
+            font-size: 11px;
+            margin-top: 20px;
+            border-top: 1px solid #444;
+            padding-top: 12px;
+        }
+
+        .footer-area strong {
+            color: #aaa;
+        }
+
+        .footer-area .small-note {
+            font-size: 9px;
+            color: #555;
+        }
+
+        .hangar-badge {
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚀 ROCKET BUILDER</h1>
+    <div class="subtitle">DESIGN • LAUNCH • EXPLODE</div>
+
+    <div class="main-layout">
+        <!-- CANVAS -->
+        <div class="canvas-container">
+            <canvas id="rocketCanvas" width="400" height="500"></canvas>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <div class="panel">
+                <h2>🛠️ Build Your Rocket</h2>
+
+                <div class="slider-group">
+                    <label>Fuel Stages <span id="fuelVal">5</span></label>
+                    <input type="range" id="fuel" min="1" max="10" value="5">
+                </div>
+
+                <div class="slider-group">
+                    <label>Thrust Power <span id="thrustVal">50</span>%</label>
+                    <input type="range" id="thrust" min="10" max="100" value="50">
+                </div>
+
+                <div class="slider-group">
+                    <label>Weight <span id="weightVal">50</span> tons</label>
+                    <input type="range" id="weight" min="10" max="100" value="50">
+                </div>
+
+                <div class="slider-group">
+                    <label>Aerodynamics <span id="aeroVal">50</span>%</label>
+                    <input type="range" id="aero" min="0" max="100" value="50">
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>⚡ Speed Control</h2>
+                <div class="btn-group">
+                    <button class="btn speed-btn active" data-speed="1">1x</button>
+                    <button class="btn speed-btn" data-speed="2">2x</button>
+                    <button class="btn speed-btn" data-speed="3">3x</button>
+                </div>
+            </div>
+
+            <button class="btn btn-launch" id="launchBtn">🚀 LAUNCH</button>
+
+            <div id="resultBox">
+                <div class="height" id="heightDisplay">0 ft</div>
+                <div class="message" id="messageDisplay"></div>
+                <div class="suggestion" id="suggestionDisplay"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CREDITS & COPYRIGHT ===== -->
+    <div class="footer-area">
+        <p>🚀 Rocket Builder by <strong>FRONTI</strong></p>
+        <p>Built with guidance from online resources</p>
+        <p>© 2026 FRONTI. All rights reserved.</p>
+        <p class="small-note">For educational and fun purposes only.</p>
+    </div>
+
+    <div class="hangar-badge">⬡ HANGAR v1.0</div>
+</div>
+
+<script>
+    // === CANVAS ===
+    const canvas = document.getElementById('rocketCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // === SLIDERS ===
+    const fuelSlider = document.getElementById('fuel');
+    const thrustSlider = document.getElementById('thrust');
+    const weightSlider = document.getElementById('weight');
+    const aeroSlider = document.getElementById('aero');
+
+    const fuelVal = document.getElementById('fuelVal');
+    const thrustVal = document.getElementById('thrustVal');
+    const weightVal = document.getElementById('weightVal');
+    const aeroVal = document.getElementById('aeroVal');
+
+    // === RESULT ===
+    const resultBox = document.getElementById('resultBox');
+    const heightDisplay = document.getElementById('heightDisplay');
+    const messageDisplay = document.getElementById('messageDisplay');
+    const suggestionDisplay = document.getElementById('suggestionDisplay');
+
+    // === SPEED ===
+    let speedMultiplier = 1;
+    const speedBtns = document.querySelectorAll('.speed-btn');
+
+    speedBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            speedBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            speedMultiplier = parseInt(this.dataset.speed);
+        });
+    });
+
+    // === ROCKET STATE ===
+    let rocket = {
+        x: 200,
+        y: 420,
+        width: 30,
+        height: 80,
+        speed: 0,
+        altitude: 0,
+        fuel: 100,
+        launched: false,
+        exploding: false,
+        done: false
+    };
+
+    let maxHeight = 0;
+    let animationId = null;
+    let launchTime = 0;
+
+    // === DRAW ROCKET ===
+    function drawRocket() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Grey background
+        ctx.fillStyle = '#555';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Ground line
+        ctx.fillStyle = '#444';
+        ctx.fillRect(0, 440, canvas.width, 60);
+
+        // Launch pad
+        ctx.fillStyle = '#666';
+        ctx.fillRect(rocket.x - 20, 435, 40, 10);
+
+        // Draw rocket (white/grey/black)
+        const rx = rocket.x - rocket.width / 2;
+        const ry = rocket.y - rocket.height;
+
+        // Body (white)
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(rx + 4, ry + 10, rocket.width - 8, rocket.height - 20);
+
+        // Nose cone (grey)
+        ctx.beginPath();
+        ctx.moveTo(rx + 2, ry + 10);
+        ctx.lineTo(rx + rocket.width / 2, ry - 20);
+        ctx.lineTo(rx + rocket.width - 2, ry + 10);
+        ctx.closePath();
+        ctx.fillStyle = '#888';
+        ctx.fill();
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Nose tip (black)
+        ctx.beginPath();
+        ctx.moveTo(rx + rocket.width / 2 - 4, ry - 10);
+        ctx.lineTo(rx + rocket.width / 2, ry - 22);
+        ctx.lineTo(rx + rocket.width / 2 + 4, ry - 10);
+        ctx.closePath();
+        ctx.fillStyle = '#222';
+        ctx.fill();
+
+        // Windows (black)
+        ctx.fillStyle = '#222';
+        ctx.beginPath();
+        ctx.arc(rx + rocket.width / 2, ry + 25, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Fins (grey)
+        ctx.fillStyle = '#777';
+        ctx.beginPath();
+        ctx.moveTo(rx + 2, ry + rocket.height - 10);
+        ctx.lineTo(rx - 10, ry + rocket.height + 5);
+        ctx.lineTo(rx + 2, ry + rocket.height);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(rx + rocket.width - 2, ry + rocket.height - 10);
+        ctx.lineTo(rx + rocket.width + 10, ry + rocket.height + 5);
+        ctx.lineTo(rx + rocket.width - 2, ry + rocket.height);
+        ctx.closePath();
+        ctx.fill();
+
+        // Engine (black)
+        ctx.fillStyle = '#222';
+        ctx.fillRect(rx + 8, ry + rocket.height - 5, rocket.width - 16, 8);
+
+        // Engine flame (if launched)
+        if (rocket.launched && !rocket.exploding && rocket.fuel > 0) {
+            const flameLen = 15 + (rocket.speed / 10) * 20;
+            const gradient = ctx.createLinearGradient(rx + rocket.width/2, ry + rocket.height, rx + rocket.width/2, ry + rocket.height + flameLen + 20);
+            gradient.addColorStop(0, 'rgba(255, 200, 50, 0.9)');
+            gradient.addColorStop(0.5, 'rgba(255, 100, 20, 0.6)');
+            gradient.addColorStop(1, 'rgba(255, 50, 0, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(rx + 6, ry + rocket.height);
+            ctx.lineTo(rx + rocket.width / 2, ry + rocket.height + flameLen + 20);
+            ctx.lineTo(rx + rocket.width - 6, ry + rocket.height);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Explosion
+        if (rocket.exploding) {
+            ctx.fillStyle = 'rgba(255, 200, 50, 0.3)';
+            ctx.beginPath();
+            ctx.arc(rx + rocket.width/2, ry + rocket.height/2, 60 + Math.random() * 30, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'rgba(255, 100, 20, 0.5)';
+            ctx.beginPath();
+            ctx.arc(rx + rocket.width/2 - 20, ry + rocket.height/2 - 20, 30 + Math.random() * 20, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'rgba(255, 200, 50, 0.4)';
+            ctx.beginPath();
+            ctx.arc(rx + rocket.width/2 + 20, ry + rocket.height/2 + 10, 25 + Math.random() * 20, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Labels
+        ctx.fillStyle = '#222';
+        ctx.font = '12px Courier New';
+        ctx.fillText(`🚀 ${Math.round(rocket.altitude)} ft`, 10, 25);
+        ctx.fillText(`⛽ ${Math.round(rocket.fuel)}%`, 10, 45);
+        ctx.fillText(`⚡ ${Math.round(rocket.speed)} ft/s`, 10, 65);
+        ctx.fillText(`🏔️ Max: ${Math.round(maxHeight)} ft`, 10, 85);
+
+        // Speed indicator
+        ctx.fillStyle = '#aaa';
+        ctx.font = '11px Courier New';
+        ctx.fillText(`x${speedMultiplier}`, 370, 25);
+    }
+
+    // === LAUNCH ===
+    document.getElementById('launchBtn').addEventListener('click', function() {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+
+        // Reset rocket
+        const fuel = parseInt(fuelSlider.value);
+        const thrust = parseInt(thrustSlider.value);
+        const weight = parseInt(weightSlider.value);
+        const aero = parseInt(aeroSlider.value);
+
+        rocket = {
+            x: 200,
+            y: 420,
+            width: 30,
+            height: 80,
+            speed: 0,
+            altitude: 0,
+            fuel: 100,
+            launched: true,
+            exploding: false,
+            done: false,
+            thrust: thrust,
+            weight: weight,
+            aero: aero,
+            fuelStages: fuel
+        };
+
+        maxHeight = 0;
+        launchTime = Date.now();
+        resultBox.classList.remove('show');
+        resultBox.className = '';
+
+        updateGame();
+    });
+
+    // === UPDATE GAME ===
+    function updateGame() {
+        if (!rocket.launched || rocket.done) return;
+
+        // Fuel consumption
+        const fuelBurn = 0.3 + (rocket.thrust / 200) * 0.5;
+        rocket.fuel -= fuelBurn * speedMultiplier * 0.5;
+
+        if (rocket.fuel < 0) rocket.fuel = 0;
+
+        // Calculate acceleration
+        const thrustForce = rocket.thrust / 50;
+        const weightForce = rocket.weight / 50;
+        const aeroForce = rocket.aero / 100;
+
+        let acceleration = (thrustForce - weightForce) * (0.5 + aeroForce * 0.5);
+
+        // Fuel out = no thrust
+        if (rocket.fuel <= 0) {
+            acceleration = -weightForce * 0.3;
+        }
+
+        rocket.speed += acceleration * speedMultiplier * 0.3;
+        if (rocket.speed < 0) rocket.speed = 0;
+
+        rocket.altitude += rocket.speed * speedMultiplier * 0.2;
+
+        if (rocket.altitude < 0) rocket.altitude = 0;
+
+        // Track max height
+        if (rocket.altitude > maxHeight) maxHeight = rocket.altitude;
+
+        // Move rocket up on canvas
+        const canvasHeight = 500;
+        const maxAlt = 120000;
+        const altRatio = Math.min(rocket.altitude / maxAlt, 1);
+        rocket.y = 420 - altRatio * 350;
+
+        // === CHECK DEATH CONDITIONS ===
+        let deathReason = null;
+
+        // 1. Out of fuel
+        if (rocket.fuel <= 0 && rocket.altitude < 1000) {
+            deathReason = 'fuel';
+        }
+
+        // 2. Burned up (too fast + low aero)
+        if (rocket.speed > 150 && rocket.aero < 40) {
+            deathReason = 'burn';
+        }
+
+        // 3. Too heavy and no aero
+        if (rocket.weight > 70 && rocket.aero < 30 && rocket.altitude < 100) {
+            deathReason = 'heavy';
+        }
+
+        // 4. Reached space! (win)
+        if (rocket.altitude >= 100000) {
+            deathReason = 'win';
+        }
+
+        // 5. Hit ground (crash)
+        if (rocket.altitude < 0) {
+            deathReason = 'crash';
+        }
+
+        if (deathReason) {
+            rocket.done = true;
+            rocket.launched = false;
+            if (deathReason !== 'win') {
+                rocket.exploding = true;
+                setTimeout(() => {
+                    rocket.exploding = false;
+                    showResult(deathReason);
+                }, 800);
+            } else {
+                showResult(deathReason);
+            }
+            drawRocket();
+            return;
+        }
+
+        drawRocket();
+        animationId = requestAnimationFrame(updateGame);
+    }
+
+    // === SHOW RESULT ===
+    function showResult(reason) {
+        resultBox.classList.add('show');
+
+        const h = Math.round(maxHeight);
+        heightDisplay.textContent = h + ' ft';
+
+        let message = '';
+        let suggestion = '';
+        let resultClass = '';
+
+        switch(reason) {
+            case 'fuel':
+                message = `⛽ You ran out of fuel at ${h} ft. Rocket couldn't keep up.`;
+                suggestion = 'Add more fuel stages next time, rookie.';
+                resultClass = 'fail';
+                break;
+            case 'burn':
+                message = '🔥 Oops... you went a bit fast. Try to slow down again.';
+                suggestion = 'Less thrust, more aerodynamics. Or just embrace the burn.';
+                resultClass = 'fail';
+                break;
+            case 'heavy':
+                message = '🪨 Your rocket is too heavy. Stop eating so much.';
+                suggestion = 'Reduce weight or add more thrust. Or both.';
+                resultClass = 'fail';
+                break;
+            case 'crash':
+                message = '💀 Physics has officially cooked you.';
+                suggestion = 'Return to the garage and rethink your life choices.';
+                resultClass = 'fail';
+                break;
+            case 'win':
+                message = '🏆 Nice job! You maybe should study planes or rockets.';
+                suggestion = `You reached ${h} ft! Space is waiting for you.`;
+                resultClass = 'pass';
+                break;
+            default:
+                message = '💥 Something exploded. Not sure what.';
+                suggestion = 'Try again?';
+                resultClass = 'fail';
+        }
+
+        messageDisplay.textContent = message;
+        suggestionDisplay.textContent = '✏️ ' + suggestion;
+        resultBox.className = 'show ' + resultClass;
+    }
+
+    // === SLIDER UPDATES ===
+    fuelSlider.addEventListener('input', function() {
+        fuelVal.textContent = this.value;
+        if (!rocket.launched) drawRocket();
+    });
+    thrustSlider.addEventListener('input', function() {
+        thrustVal.textContent = this.value;
+        if (!rocket.launched) drawRocket();
+    });
+    weightSlider.addEventListener('input', function() {
+        weightVal.textContent = this.value;
+        if (!rocket.launched) drawRocket();
+    });
+    aeroSlider.addEventListener('input', function() {
+        aeroVal.textContent = this.value;
+        if (!rocket.launched) drawRocket();
+    });
+
+    // === INIT ===
+    drawRocket();
+</script>
+</body>
+</html>
+```
